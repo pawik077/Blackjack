@@ -30,6 +30,15 @@ def create_deck():
 			deck.append(Card(suit, rank))
 	return deck
 
+def hit(player_cards, player_score, deck):
+	player_cards.append(deck.pop(rd.randint(0, len(deck))))
+	player_score += player_cards[-1].value
+	if len(player_cards) == 2:
+		if player_cards[0].rank == player_cards[1].rank == 'A':
+			player_cards[0].value = 1
+			player_score -= 10
+	return player_cards, player_score
+
 def main():
 	deck = create_deck()
 	player_cards = []
@@ -37,22 +46,24 @@ def main():
 	player_score = 0
 	dealer_score = 0
 	while len(player_cards) < 2:
-		player_cards.append(deck.pop(rd.randint(0, len(deck))))
-		player_score += player_cards[-1].value
-		if len(player_cards) == 2:
-			if player_cards[0].rank == player_cards[1].rank == 'A':
-				player_cards[0].value = 1
-				player_score -= 10
-		dealer_cards.append(deck.pop(rd.randint(0, len(deck))))
-		dealer_score += dealer_cards[-1].value
-		if len(dealer_cards) == 2:
-			if dealer_cards[0].rank == dealer_cards[1].rank == 'A':
-				dealer_cards[0].value = 1
-				dealer_score -= 10
+		player_cards, player_score = hit(player_cards, player_score, deck)
+		dealer_cards, dealer_score = hit(dealer_cards, dealer_score, deck)
 		print("Player cards:", player_cards)
 		print("Dealer cards:", dealer_cards)
 		print("Player score:", player_score)
 		print("Dealer score:", dealer_score)
+		if player_score == dealer_score == 21:
+			print("Draw")
+			break
+		if player_score == 21:
+			print("Player has blackjack!")
+			print("Player wins!")
+			break
+		if dealer_score == 21:
+			print("Dealer has blackjack!")
+			print("Dealer wins!")
+			break
+
 
 	
 
