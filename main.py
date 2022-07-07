@@ -33,10 +33,11 @@ def create_deck():
 def hit(player_cards, player_score, deck):
 	player_cards.append(deck.pop(rd.randint(0, len(deck))))
 	player_score += player_cards[-1].value
-	if len(player_cards) == 2:
-		if player_cards[0].rank == player_cards[1].rank == 'A':
-			player_cards[0].value = 1
-			player_score -= 10
+	for card in player_cards:
+		while player_score > 21:
+			if card.rank == 'A':
+				card.value = 1
+				player_score -= 10
 	return player_cards, player_score
 
 def main():
