@@ -56,18 +56,48 @@ def main():
 		print("Dealer score:", dealer_score)
 		if player_score == dealer_score == 21:
 			print("Draw")
-			break
+			quit()
 		if player_score == 21:
 			print("Player has blackjack!")
 			print("Player wins!")
-			break
+			quit()	
 		if dealer_score == 21:
 			print("Dealer has blackjack!")
 			print("Dealer wins!")
+			quit()	
+	while player_score < 21:
+		choice = input("Hit or stand? (h/s) ")
+		if len(choice) != 1 or choice.upper() not in 'HS':
+			print("Invalid input!")
+			continue
+		if choice.upper() == 'H':
+			player_cards = hit(player_cards, deck)
+			player_score = sum(c.value for c in player_cards)
+			print("Player cards:", player_cards)
+			print("Player score:", player_score)
+			if player_score > 21:
+				print("Player has busted!")
+				print("Dealer wins!")
+				quit()
+			elif player_score == 21: break
+		elif choice.upper() == 'S':
 			break
-
-
-	
+	while dealer_score < 17:
+		dealer_cards = hit(dealer_cards, deck)
+		dealer_score = sum(c.value for c in dealer_cards)
+		print("Dealer cards:", dealer_cards)
+		print("Dealer score:", dealer_score)
+		if dealer_score > 21:
+			print("Dealer has busted!")
+			print("Player wins!")
+			quit()
+		elif dealer_score == 21: break
+	if player_score > dealer_score:
+		print("Player wins!")
+	elif player_score < dealer_score:
+		print("Dealer wins!")
+	else:
+		print("Draw")
 
 if __name__ == '__main__':
 	main()
