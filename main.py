@@ -51,9 +51,7 @@ def main():
 		player_score = sum(c.value for c in player_cards)
 		dealer_score = sum(c.value for c in dealer_cards)
 		print("Player cards:", player_cards)
-		print("Dealer cards:", dealer_cards)
-		print("Player score:", player_score)
-		print("Dealer score:", dealer_score)
+		print(f"Dealer cards: [{dealer_cards[0]}{f', {dealer_cards[1]}' if dealer_score == 21 or player_score == 21 else ', ?' if len(dealer_cards) > 1 else ''}]")
 		if player_score == dealer_score == 21:
 			print("Draw")
 			quit()
@@ -74,7 +72,6 @@ def main():
 			player_cards = hit(player_cards, deck)
 			player_score = sum(c.value for c in player_cards)
 			print("Player cards:", player_cards)
-			print("Player score:", player_score)
 			if player_score > 21:
 				print("Player has busted!")
 				print("Dealer wins!")
@@ -82,11 +79,11 @@ def main():
 			elif player_score == 21: break
 		elif choice.upper() == 'S':
 			break
+	print("Dealer cards:", dealer_cards)
 	while dealer_score < 17:
 		dealer_cards = hit(dealer_cards, deck)
 		dealer_score = sum(c.value for c in dealer_cards)
 		print("Dealer cards:", dealer_cards)
-		print("Dealer score:", dealer_score)
 		if dealer_score > 21:
 			print("Dealer has busted!")
 			print("Player wins!")
