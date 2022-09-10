@@ -68,10 +68,10 @@ def round(bet):
 		# if player_cards[0].rank == player_cards[1].rank and len(player_cards) == 2:
 		# 	choice = input("What do you want to do? (h for hit, s for split, d for double down, or q for stand) ")
 		if len(player_cards) == 2:
-			choice = input("What do you want to do? (h for hit, d for double down, or s for stand) ")
+			choice = input("What do you want to do? (h for hit, d for double down, or q for stand) ")
 		else:
-			choice = input("What do you want to do? (h for hit or s for stand) ")
-		if len(choice) != 1 or choice.upper() not in ('HDS' if len(player_cards) == 2 else 'HS'):
+			choice = input("What do you want to do? (h for hit or q for stand) ")
+		if len(choice) != 1 or choice.upper() not in ('HDQ' if len(player_cards) == 2 else 'HQ'):
 			print("Invalid input!")
 			continue
 		if choice.upper() == 'H':
@@ -98,7 +98,7 @@ def round(bet):
 				return -bet
 			# elif player_score == 21: break
 			break
-		elif choice.upper() == 'S':
+		elif choice.upper() == 'Q':
 			break
 	print("Dealer cards:", dealer_cards)
 	while dealer_score < 17:
