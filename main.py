@@ -30,15 +30,14 @@ def create_deck():
 			deck.append(Card(suit, rank))
 	return deck
 
-def hit(player_cards, player_score, deck):
-	player_cards.append(deck.pop(rd.randint(0, len(deck))))
-	player_score += player_cards[-1].value
-	for card in player_cards:
-		while player_score > 21:
-			if card.rank == 'A':
-				card.value = 1
-				player_score -= 10
-	return player_cards, player_score
+def hit(cards, deck):
+	cards.append(deck.pop(rd.randint(0, len(deck) - 1)))
+	c = 0
+	while sum(c.value for c in cards) > 21 and c < len(cards):
+		if cards[c].rank == 'A':
+			cards[c].value = 1
+		c += 1
+	return cards
 
 def main():
 	deck = create_deck()
@@ -47,8 +46,10 @@ def main():
 	player_score = 0
 	dealer_score = 0
 	while len(player_cards) < 2:
-		player_cards, player_score = hit(player_cards, player_score, deck)
-		dealer_cards, dealer_score = hit(dealer_cards, dealer_score, deck)
+		player_cards = hit(player_cards, deck)
+		dealer_cards = hit(dealer_cards, deck)
+		player_score = sum(c.value for c in player_cards)
+		dealer_score = sum(c.value for c in dealer_cards)
 		print("Player cards:", player_cards)
 		print("Dealer cards:", dealer_cards)
 		print("Player score:", player_score)
