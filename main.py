@@ -112,7 +112,11 @@ def main():
 	while tokens > 0:
 		print(f'You now have {tokens} tokens.')
 		print()
-		bet = input("How much do you want to bet? ")
+		bet = input("How much do you want to bet? (q to quit) ")
+		if bet == 'q':
+			print(f"You leave the table with {tokens} tokens.")
+			print("Goodbye!")
+			return
 		if not bet.isdigit():
 			print("Invalid input!")
 			continue
