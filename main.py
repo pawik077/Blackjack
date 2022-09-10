@@ -64,6 +64,7 @@ def main():
 			print("Dealer wins!")
 			quit()	
 	while player_score < 21:
+		print()
 		choice = input("Hit or stand? (h/s) ")
 		if len(choice) != 1 or choice.upper() not in 'HS':
 			print("Invalid input!")
@@ -81,6 +82,7 @@ def main():
 			break
 	print("Dealer cards:", dealer_cards)
 	while dealer_score < 17:
+		print()
 		dealer_cards = hit(dealer_cards, deck)
 		dealer_score = sum(c.value for c in dealer_cards)
 		print("Dealer cards:", dealer_cards)
