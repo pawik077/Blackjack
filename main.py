@@ -39,7 +39,7 @@ def hit(cards, deck):
 		c += 1
 	return cards
 
-def main():
+def round(bet):
 	deck = create_deck()
 	player_cards = []
 	dealer_cards = []
@@ -54,15 +54,15 @@ def main():
 		print(f"Dealer cards: [{dealer_cards[0]}{f', {dealer_cards[1]}' if dealer_score == 21 or player_score == 21 else ', ?' if len(dealer_cards) > 1 else ''}]")
 		if player_score == dealer_score == 21:
 			print("Draw")
-			quit()
+			return 0
 		if player_score == 21:
 			print("Player has blackjack!")
 			print("Player wins!")
-			quit()	
+			return bet * 1.5
 		if dealer_score == 21:
 			print("Dealer has blackjack!")
 			print("Dealer wins!")
-			quit()	
+			return -bet
 	while player_score < 21:
 		print()
 		choice = input("Hit or stand? (h/s) ")
@@ -76,7 +76,7 @@ def main():
 			if player_score > 21:
 				print("Player has busted!")
 				print("Dealer wins!")
-				quit()
+				return -bet
 			elif player_score == 21: break
 		elif choice.upper() == 'S':
 			break
@@ -89,14 +89,38 @@ def main():
 		if dealer_score > 21:
 			print("Dealer has busted!")
 			print("Player wins!")
-			quit()
+			return bet
 		elif dealer_score == 21: break
 	if player_score > dealer_score:
 		print("Player wins!")
+		return bet
 	elif player_score < dealer_score:
 		print("Dealer wins!")
+		return -bet
 	else:
 		print("Draw")
+		return 0
+
+def main():
+	print("Welcome to Blackjack!")
+	print("The goal of the game is to get as close to 21 as possible without going over.")
+	print("Aces can be worth 1 or 11.")
+	print("Jacks, Queens, and Kings are worth 10.")
+	print("Have fun!")
+	print()
+	tokens = 100
+	while tokens > 0:
+		print(f'You now have {tokens} tokens.')
+		print()
+		bet = input("How much do you want to bet? ")
+		if not bet.isdigit():
+			print("Invalid input!")
+			continue
+		bet = int(bet)
+		if bet > tokens:
+			print("You don't have enough tokens!")
+			continue
+		tokens += round(bet)
 
 if __name__ == '__main__':
 	main()
