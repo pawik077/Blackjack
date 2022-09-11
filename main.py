@@ -53,25 +53,26 @@ def round(bet):
 		print("Player cards:", player_cards)
 		print(f"Dealer cards: [{dealer_cards[0]}{f', {dealer_cards[1]}' if dealer_score == 21 or player_score == 21 else ', ?' if len(dealer_cards) > 1 else ''}]")
 		if player_score == dealer_score == 21:
-			print("Draw")
+			print("Push!")
 			return 0
 		if player_score == 21:
 			print("Player has blackjack!")
-			print("Player wins!")
+			print(f"Player wins {bet * 1.5} tokens!")
 			return bet * 1.5
 		if dealer_score == 21:
 			print("Dealer has blackjack!")
 			print("Dealer wins!")
+			print(f"Player loses {bet} tokens!")
 			return -bet
 	while player_score < 21:
 		print()
-		# if player_cards[0].rank == player_cards[1].rank and len(player_cards) == 2:
-		# 	choice = input("What do you want to do? (h for hit, s for split, d for double down, or q for stand) ")
-		if len(player_cards) == 2:
+		if player_cards[0].rank == player_cards[1].rank and len(player_cards) == 2:
+			choice = input("What do you want to do? (h for hit, s for split, d for double down, or q for stand) ")
+		elif len(player_cards) == 2:
 			choice = input("What do you want to do? (h for hit, d for double down, or q for stand) ")
 		else:
 			choice = input("What do you want to do? (h for hit or q for stand) ")
-		if len(choice) != 1 or choice.upper() not in ('HDQ' if len(player_cards) == 2 else 'HQ'):
+		if len(choice) != 1 or choice.upper() not in ('HDQS' if player_cards[0].rank == player_cards[1].rank and len(player_cards) == 2 else 'HDQ' if len(player_cards) == 2 else 'HQ'):
 			print("Invalid input!")
 			continue
 		if choice.upper() == 'H':
@@ -81,6 +82,7 @@ def round(bet):
 			if player_score > 21:
 				print("Player has busted!")
 				print("Dealer wins!")
+				print(f"Player loses {bet} tokens!")
 				return -bet
 			elif player_score == 21: break
 		elif choice.upper() == 'D':
@@ -95,9 +97,83 @@ def round(bet):
 			if player_score > 21:
 				print("Player has busted!")
 				print("Dealer wins!")
+				print(f"Player loses {bet} tokens!")
 				return -bet
-			# elif player_score == 21: break
 			break
+		elif choice.upper() == 'S':
+			if len(player_cards) != 2 or player_cards[0].rank != player_cards[1].rank:
+				print("You can only split on your first turn if you have two cards of the same rank!")
+				continue
+			print("You split your hand into two hands.")
+			player_cards = [[player_cards[0]], [player_cards[1]]]
+			bet = [bet, bet]
+			player_cards[0] = hit(player_cards[0], deck)
+			player_cards[1] = hit(player_cards[1], deck)
+			player_score = [sum(c.value for c in player_cards[0]), sum(c.value for c in player_cards[1])]
+			print("Player cards:", player_cards)
+			if player_score[0] == 21:
+				print("Player has blackjack in first hand!")
+				bet[0] = bet[0] * 1.5
+			else:
+				print("You play your first hand.")
+				while player_score[0] < 21:
+					if len(player_cards[0]) == 2:
+						choice = input("What do you want to do? (h for hit, d for double down, or q for stand) ")
+					else:
+						choice = input("What do you want to do? (h for hit or q for stand) ")
+					if len(choice) != 1 or choice.upper() not in ('HDQ' if len(player_cards[0]) == 2 else 'HQ'):
+						print("Invalid input!")
+						continue
+					if choice.upper() == 'H':
+						player_cards[0] = hit(player_cards[0], deck)
+						player_score[0] = sum(c.value for c in player_cards[0])
+						print("Player cards:", player_cards)
+						if player_score[0] > 21:
+							print("Player has busted!")
+							print("Dealer wins!")
+							bet[0] = -bet[0]
+							break
+						elif player_score[0] == 21: break
+					elif choice.upper() == 'D':
+						if len(player_cards[0]) != 2:
+							print("You can only double down on your first turn!")
+							continue
+						bet[0] = bet[0] * 2
+						print("You double your bet to", bet[0])
+						player_cards[0] = hit(player_cards[0], deck)
+						player_score[0] = sum(c.value for c in player_cards[0])
+						print("Player cards:", player_cards)
+						if player_score[0] > 21:
+							print("Player has busted!")
+							print("Dealer wins!")
+							bet[0] = -bet[0]
+							break
+						break
+					elif choice.upper() == 'Q':
+						break
+			if player_score[1] == 21:
+				print("Player has blackjack in second hand!")
+				bet[1] = bet[1] * 1.5
+			else:
+				print("You play your second hand.")
+				while player_score[1] < 21:
+					choice = input("What do you want to do? (h for hit or q for stand) ")
+					if len(choice) != 1 or choice.upper() not in 'HQ':
+						print("Invalid input!")
+						continue
+					if choice.upper() == 'H':
+						player_cards[1] = hit(player_cards[1], deck)
+						player_score[1] = sum(c.value for c in player_cards[1])
+						print("Player cards:", player_cards)
+						if player_score[1] > 21:
+							print("Player has busted!")
+							print("Dealer wins!")
+							bet[1] = -bet[1]
+							break
+						elif player_score[1] == 21: break
+					elif choice.upper() == 'Q':
+						break
+				break
 		elif choice.upper() == 'Q':
 			break
 	print("Dealer cards:", dealer_cards)
@@ -108,18 +184,42 @@ def round(bet):
 		print("Dealer cards:", dealer_cards)
 		if dealer_score > 21:
 			print("Dealer has busted!")
-			print("Player wins!")
-			return bet
+			if type(bet) is list:
+				print(f"Player wins {sum(bet)} tokens!")
+				return sum(bet)
+			else:
+				print(f"Player wins {bet} tokens!")
+				return bet
 		elif dealer_score == 21: break
-	if player_score > dealer_score:
-		print("Player wins!")
-		return bet
-	elif player_score < dealer_score:
-		print("Dealer wins!")
-		return -bet
+	if type(player_score) is list:
+		if player_score[0] > dealer_score:
+			print("Player wins first hand!")
+		else:
+			print("Dealer wins first hand!")
+			bet[0] = -bet[0]
+		if player_score[1] > dealer_score:
+			print("Player wins second hand!")
+		else:
+			print("Dealer wins second hand!")
+			bet[1] = -bet[1]
+		if sum(bet) > 0:
+			print(f"Player wins {sum(bet)} tokens!")
+		elif sum(bet) < 0:
+			print(f"Player loses {sum(bet)} tokens!")
+		else:
+			print("Push!")
+		return sum(bet)
 	else:
-		print("Draw")
-		return 0
+		if player_score > dealer_score:
+			print(f"Player wins {bet} tokens!")
+			return bet
+		elif player_score < dealer_score:
+			print("Dealer wins!")
+			print(f"Player loses {bet} tokens!")
+			return -bet
+		else:
+			print("Push!")
+			return 0
 
 def main():
 	print("Welcome to Blackjack!")
